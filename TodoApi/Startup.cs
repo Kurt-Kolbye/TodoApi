@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Net.Http.Headers;
 using TodoApi.Models;
 
 namespace TodoApi
@@ -21,12 +22,13 @@ namespace TodoApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Added to support cross-origin requests
+            // Added to support cross-origin requests and the ContentType header
             // Swap out localhost with other environments
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowMyOrigin",
-                    builder => builder.WithOrigins("https://localhost:44346"));
+                    builder => builder.WithOrigins("https://localhost:44346", "http://127.0.0.1:5500")
+                    .WithHeaders(HeaderNames.ContentType, "application/json"));
             });
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             services.AddControllers();

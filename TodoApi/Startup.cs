@@ -28,7 +28,8 @@ namespace TodoApi
             {
                 options.AddPolicy("AllowMyOrigin",
                     builder => builder.WithOrigins("https://localhost:44346", "http://127.0.0.1:5500")
-                    .WithHeaders(HeaderNames.ContentType, "application/json"));
+                    .WithHeaders(HeaderNames.ContentType, "application/json")
+                    .AllowAnyMethod());
             });
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
             services.AddControllers();

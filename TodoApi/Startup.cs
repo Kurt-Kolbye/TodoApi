@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using TodoApi.Data;
+using TodoApi.Services;
 
 namespace TodoApi
 {
@@ -22,7 +23,7 @@ namespace TodoApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Added to support cross-origin requests and the ContentType header
-            // Swap out localhost with other environments
+            // Swap out localhost with other environments later
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowMyOrigin",
@@ -30,7 +31,12 @@ namespace TodoApi
                     .WithHeaders(HeaderNames.ContentType, "application/json")
                     .AllowAnyMethod());
             });
+
+            // Add dependencies including DbContext
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITodoService, TodoService>();
+
             services.AddControllers();
         }
 

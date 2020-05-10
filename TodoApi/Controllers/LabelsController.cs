@@ -16,7 +16,7 @@ namespace TodoApi.Controllers
     [EnableCors("AllowMyOrigin")]
     public class LabelsController : ControllerBase
     {
-        // TODO: Identify if TodoContext should be changed to a separate LabelContext or change it to a generic DbContext
+        // TODO: Replace TodoContext dependency with TodoService or a new LabelService
         private readonly TodoContext _context;
 
         public LabelsController(TodoContext context)

@@ -6,7 +6,7 @@ using TodoApi.Data.Repositories;
 
 namespace TodoApi.Data
 {
-    interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IDisposable
     {
         ITodoItemRepository TodoItems { get; }
         ILabelRepository Labels { get; }

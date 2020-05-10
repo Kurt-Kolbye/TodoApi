@@ -7,7 +7,7 @@ using TodoApi.Models;
 
 namespace TodoApi.Data.Repositories
 {
-    public class TodoItemRepository : Repository<TodoItem>, ITodoItemRepository
+    public class TodoItemRepository : BaseRepository<TodoItem>, ITodoItemRepository
     {
         // Casts Context as TodoContext so it doesn't have to be specified in other methods
         // TODO: Make Private if necessary

@@ -3,7 +3,7 @@ using TodoApi.Models;
 
 namespace TodoApi.Data.Repositories
 {
-    public interface ITodoItemRepository : IRepository<TodoItem>
+    public interface ITodoItemRepository : IBaseRepository<TodoItem>
     {
         // Add some specific methods here. Ideas listed below (should be in service layer?)
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
 using TodoApi.Data;
+using TodoApi.Services;
 
 namespace TodoApi.Controllers
 {
@@ -16,6 +17,7 @@ namespace TodoApi.Controllers
     [EnableCors("AllowMyOrigin")]
     public class TodoItemsController : ControllerBase
     {
+        // TODO: Replace TodoContext dependency with TodoService
         private readonly TodoContext _context;
 
         public TodoItemsController(TodoContext context)
@@ -79,6 +81,7 @@ namespace TodoApi.Controllers
 
             _context.Entry(todoItem).State = EntityState.Modified;
 
+            //TODO: Figure out how this try-catch will work since it needs to call the Service
             try
             {
                 await _context.SaveChangesAsync();

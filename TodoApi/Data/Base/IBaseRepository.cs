@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace TodoApi.Data.Repositories.Base
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IBaseRepository<TEntity> where TEntity : class
     {
         TEntity Get(long id);
         IEnumerable<TEntity> GetAll();

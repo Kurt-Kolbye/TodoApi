@@ -5,13 +5,13 @@ namespace TodoApi.Services
 {
     public interface ITodoService
     {
-        public IList<TodoItem> GetAllTodoItems();
-        public TodoItem GetTodoItem(long id);
+        public IEnumerable<TodoItem> GetAll();
+        public TodoItem Get(long id);
 
-        public bool CreateTodoItem(TodoItem todoItem);
+        public bool Add(TodoItem todoItem);
 
-        public bool UpdateTodoItem(TodoItem todoItem);
+        public bool Update(TodoItem todoItem);
 
-        public TodoItem RemoveTodoItem(TodoItem todoItem);
+        public TodoItem Remove(TodoItem todoItem);
     }
 }

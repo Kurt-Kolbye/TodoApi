@@ -16,37 +16,73 @@ namespace TodoApi.Services
             _unitOfWork = unitOfWork;
         }
         
-        // TODO: Implement methods
-        public IList<TodoItem> GetAllTodoItems()
+        public IEnumerable<TodoItem> GetAll()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.TodoItems.GetAll();
         }
 
-        public TodoItem GetTodoItem(long id)
+        public TodoItem Get(long id)
         {
-            throw new NotImplementedException();
+            return _unitOfWork.TodoItems.Get(id);
         }
 
-        public bool CreateTodoItem(TodoItem todoItem)
+        public bool Add(TodoItem todoItem)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            try
+            {
+                _unitOfWork.TodoItems.Add(todoItem);
+                _unitOfWork.Complete();
+                result = true;
+            }
+            catch (Exception)
+            {
+                _unitOfWork.Dispose();
+            }
+
+            return result;
         }
 
-        public bool UpdateTodoItem(TodoItem todoItem)
+        public bool Update(TodoItem todoItem)
         {
-            throw new NotImplementedException();
+            bool result = false;
+            try
+            {
+                // TODO: Verify this works or if there's other logic that needs to occur to update an item
+                var item = _unitOfWork.TodoItems.Get(todoItem.Id);
+                if (item != null)
+                {
+                    item = todoItem;
+                    _unitOfWork.Complete();
+                    result = true;
+                }
+            }
+            catch (Exception)
+            {
+                _unitOfWork.Dispose();
+            }
+
+            return result;
         }
 
 
-        public TodoItem RemoveTodoItem(TodoItem todoItem)
+        public TodoItem Remove(TodoItem todoItem)
         {
-            throw new NotImplementedException();
-        }
+            var item = _unitOfWork.TodoItems.Get(todoItem.Id);
+            try
+            {
+                if (item != null)
+                {
+                    _unitOfWork.TodoItems.Remove(todoItem);
+                    _unitOfWork.Complete();
+                }
+            }
+            catch (Exception)
+            {
+                _unitOfWork.Dispose();
+            }
 
-        // TODO: Remove if never used
-        private bool TodoItemExists(long id)
-        {
-            throw new NotImplementedException();
+            return item;
         }
     }
 }

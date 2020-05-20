@@ -32,8 +32,9 @@ namespace TodoApi
                     .AllowAnyMethod());
             });
 
-            // Add dependencies including DbContext
-            services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+            // Add dependencies including DbContext. QueryTrackingBehavior is disabled to prevent issues with double tracking entities unexpectedly
+            services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList").UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITodoService, TodoService>();
 

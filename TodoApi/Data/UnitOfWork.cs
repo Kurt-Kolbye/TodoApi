@@ -22,7 +22,6 @@ namespace TodoApi.Data
 
         public int Complete()
         {
-            // TODO: Investigate if calling SaveChangesAsync() makes a difference or is needed here
             return _context.SaveChanges();
         }
 

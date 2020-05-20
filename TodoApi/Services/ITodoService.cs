@@ -12,6 +12,6 @@ namespace TodoApi.Services
 
         public bool Update(TodoItem todoItem);
 
-        public TodoItem Remove(TodoItem todoItem);
+        public TodoItem Remove(long id);
     }
 }

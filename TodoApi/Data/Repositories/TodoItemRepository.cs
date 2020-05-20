@@ -10,7 +10,6 @@ namespace TodoApi.Data.Repositories
     public class TodoItemRepository : BaseRepository<TodoItem>, ITodoItemRepository
     {
         // Casts Context as TodoContext so it doesn't have to be specified in other methods
-        // TODO: Make Private if necessary
         public TodoContext TodoContext
         {
             get { return Context as TodoContext; }

@@ -37,6 +37,7 @@ namespace TodoApi
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ITodoService, TodoService>();
+            services.AddScoped<ILabelService, LabelService>();
 
             services.AddControllers();
         }

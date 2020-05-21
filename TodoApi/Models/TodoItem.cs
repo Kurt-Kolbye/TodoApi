@@ -10,6 +10,11 @@ namespace TodoApi.Models
 
         public IList<Label> Labels { get; set; }
 
+        public TodoItem()
+        {
+            Labels = new List<Label>();
+        }
+
         public TodoItem(string name, bool isComplete = false)
         {
             Name = name;

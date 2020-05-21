@@ -5,36 +5,37 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
+using TodoApi.Services;
 
 namespace TodoApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowMyOrigin")]
+    // TODO: Look in to adding back "await" keywords and updating the service layer to be asynchronous
     public class LabelsController : ControllerBase
     {
-        // TODO: Identify if TodoContext should be changed to a separate LabelContext or change it to a generic DbContext
-        private readonly TodoContext _context;
+        // TODO: Replace TodoContext dependency with TodoService or a new LabelService
+        private readonly ILabelService _labelService;
 
-        public LabelsController(TodoContext context)
+        public LabelsController(ILabelService labelService)
         {
-            _context = context;
+            _labelService = labelService;
         }
 
         // GET: api/Labels
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Label>>> GetLabels()
         {
-            return await _context.Labels.ToListAsync();
+            return  _labelService.GetAll().ToList();
         }
 
         // GET: api/Labels/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Label>> GetLabel(long id)
         {
-            var label = await _context.Labels.FindAsync(id);
+            var label =  _labelService.Get(id);
 
             if (label == null)
             {
@@ -53,56 +54,49 @@ namespace TodoApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(label).State = EntityState.Modified;
-
-            try
+            // Q: I don't like that this logic is here, maybe discuss a different way to detect that an item was not found, but no server problem occurred
+            if (_labelService.Get(id) == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LabelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                // Could not find the todoitem
+                return NotFound();
             }
 
-            return NoContent();
+            if (_labelService.Update(label))
+            {
+                // Label was updated successfully
+                return NoContent();
+            }
+
+            // Something went wrong internally with updating the Label
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         // POST: api/Labels
         [HttpPost]
         public async Task<ActionResult<Label>> PostLabel(Label label)
         {
-            _context.Labels.Add(label);
-            await _context.SaveChangesAsync();
+            if (_labelService.Add(label))
+            {
+                // Label was added successfully
+                return CreatedAtAction(nameof(GetLabel), new { id = label.Id }, label);
+            }
 
-            return CreatedAtAction(nameof(GetLabel), new { id = label.Id }, label);
+            // Something went wrong internally with adding the TodoItem
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         // DELETE: api/Labels/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Label>> DeleteLabel(long id)
         {
-            var label = await _context.Labels.FindAsync(id);
+            var label = _labelService.Remove(id);
             if (label == null)
             {
                 return NotFound();
             }
 
-            _context.Labels.Remove(label);
-            await _context.SaveChangesAsync();
-
+            // Return the item that was deleted
             return label;
-        }
-
-        private bool LabelExists(long id)
-        {
-            return _context.Labels.Any(e => e.Id == id);
         }
     }
 }

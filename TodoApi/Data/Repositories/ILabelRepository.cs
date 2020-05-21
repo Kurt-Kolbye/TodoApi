@@ -3,8 +3,5 @@ using TodoApi.Models;
 
 namespace TodoApi.Data.Repositories
 {
-    public interface ILabelRepository : IBaseRepository<Label>
-    {
-        // Add some specific methods here. Does Labels need anything?
-    }
+    public interface ILabelRepository : IBaseRepository<Label> {}
 }

@@ -16,7 +16,6 @@ namespace TodoApi.Controllers
     // TODO: Look in to adding back "await" keywords and updating the service layer to be asynchronous
     public class LabelsController : ControllerBase
     {
-        // TODO: Replace TodoContext dependency with TodoService or a new LabelService
         private readonly ILabelService _labelService;
 
         public LabelsController(ILabelService labelService)

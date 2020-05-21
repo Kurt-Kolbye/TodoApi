@@ -16,7 +16,6 @@ namespace TodoApi.Controllers
     // TODO: Look in to adding back "await" keywords and updating the service layer to be asynchronous
     public class TodoItemsController : ControllerBase
     {
-        // TODO: Replace TodoContext dependency with TodoService
         private readonly ITodoService _todoService;
 
         public TodoItemsController(ITodoService todoService)

@@ -14,12 +14,8 @@ namespace TodoApi.Data.Repositories
         {
             get { return Context as TodoContext; }
         }
+
         public TodoItemRepository(TodoContext context)
             : base(context){}
-
-        // TODO: Implement other methods from ITodoItemRepository and Repository
-
-        
-
     }
 }

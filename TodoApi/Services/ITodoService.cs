@@ -9,6 +9,7 @@ namespace TodoApi.Services
         public TodoItem Get(long id);
 
         public bool Add(TodoItem todoItem);
+        public bool AddLabel(long todoItemId, long labelId);
 
         public bool Update(TodoItem todoItem);
 

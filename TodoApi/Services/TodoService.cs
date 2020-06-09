@@ -43,6 +43,38 @@ namespace TodoApi.Services
             return result;
         }
 
+        // TODO: Pull out into a new TodoItemLabel service
+        public bool AddLabel(long todoItemId, long labelId)
+        {
+            bool result = false;
+
+            try
+            {
+                var todoItem = _unitOfWork.TodoItems.Get(todoItemId);
+                var label = _unitOfWork.Labels.Get(labelId);
+
+                var todoItemLabel = new TodoItemLabel
+                {
+                    Label = label,
+                    LabelId = label.Id,
+                    TodoItem = todoItem,
+                    TodoItemId = todoItem.Id
+                };
+
+                // Add new record for the TodoItemLabel
+                _unitOfWork.TodoItemLabels.Add(todoItemLabel);
+
+                _unitOfWork.Complete();
+                result = true;
+            }
+            catch (Exception)
+            {
+                _unitOfWork.Dispose();
+            }
+
+            return result;
+        }
+
         public bool Update(TodoItem todoItem)
         {
             bool result = false;

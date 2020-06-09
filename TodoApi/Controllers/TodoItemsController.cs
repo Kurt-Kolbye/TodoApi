@@ -45,7 +45,6 @@ namespace TodoApi.Controllers
         }
 
         // PUT: api/TodoItems/5
-        // TODO: Get the list of Labels to update correctly off of the TodoItem data
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
         {
@@ -69,28 +68,6 @@ namespace TodoApi.Controllers
 
             // Something went wrong internally with updating the TodoItem
             return StatusCode(StatusCodes.Status500InternalServerError);
-
-
-            // TODO: Try to load back in the TodoItem, make changes, then save it
-
-            //var item = _context.TodoItems
-            //                    .Where(t => t.Id == id)
-            //                    .Include(t => t.Labels)
-            //                    .FirstOrDefault();
-            //var todoItems = _context.TodoItems.ToList();
-            //var labels = _context.Labels.ToList();
-
-            //var newLabel = new Label("NewLabel");
-            //labels.Add(newLabel);
-            //todoItems[0].Labels.Add(newLabel);
-
-
-            //foreach (var label in todoItem.Labels)
-            //{
-            //    item.Labels.Add(label);
-            //}
-
-            //ICollection<Label> labels = item.Labels;
         }
 
         // POST: api/TodoItems

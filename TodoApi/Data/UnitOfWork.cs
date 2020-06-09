@@ -12,12 +12,14 @@ namespace TodoApi.Data
 
         public ITodoItemRepository TodoItems { get; private set; }
         public ILabelRepository Labels { get; private set; }
+        public ITodoItemLabelRepository TodoItemLabels { get; private set; }
         
         public UnitOfWork(TodoContext context)
         {
             _context = context;
             TodoItems = new TodoItemRepository(_context);
             Labels = new LabelRepository(_context);
+            TodoItemLabels = new TodoItemLabelRepository(_context);
         }
 
         public int Complete()

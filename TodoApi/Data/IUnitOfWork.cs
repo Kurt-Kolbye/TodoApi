@@ -10,6 +10,7 @@ namespace TodoApi.Data
     {
         ITodoItemRepository TodoItems { get; }
         ILabelRepository Labels { get; }
+        ITodoItemLabelRepository TodoItemLabels { get; }
         
         int Complete();
     }

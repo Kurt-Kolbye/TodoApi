@@ -84,6 +84,8 @@ namespace TodoApi.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        // TODO: Add an "AddLabel" and "DeleteLabel" method that calls this on the TodoService
+
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<TodoItem>> DeleteTodoItem(long id)

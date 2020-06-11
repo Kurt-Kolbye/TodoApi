@@ -84,6 +84,20 @@ namespace TodoApi.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
+        // POST: api/TodoItems/1/1
+        [HttpPost("{todoItemId}/{labelId}")]
+        public async Task<ActionResult<TodoItem>> PostTodoItemLabel(long todoItemId, long labelId)
+        {
+            if (_todoService.AddLabel(todoItemId, labelId))
+            {
+                // TodoItemLabel was added successfully
+                return NoContent();
+            }
+
+            // Something went wrong internally with adding the TodoItemLabel
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
         // TODO: Add an "AddLabel" and "DeleteLabel" method that calls this on the TodoService
 
         // DELETE: api/TodoItems/5

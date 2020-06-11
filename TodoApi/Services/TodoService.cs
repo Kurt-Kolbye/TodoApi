@@ -94,15 +94,10 @@ namespace TodoApi.Services
 
             try
             {
-                var todoItem = _unitOfWork.TodoItems.Get(todoItemId);
-                var label = _unitOfWork.Labels.Get(labelId);
-
                 var todoItemLabel = new TodoItemLabel
                 {
-                    Label = label,
-                    LabelId = label.Id,
-                    TodoItem = todoItem,
-                    TodoItemId = todoItem.Id
+                    TodoItemId = todoItemId,
+                    LabelId = labelId
                 };
 
                 _unitOfWork.TodoItemLabels.Add(todoItemLabel);
@@ -114,8 +109,22 @@ namespace TodoApi.Services
             {
                 _unitOfWork.Dispose();
             }
-            Debug.WriteLine("TodoService.AddLabel() output:\n" + _unitOfWork.TodoItemLabels.GetAll().ToString() + "\n");
 
+            // TODO: Remove debug lines
+            // DEBUG START
+            var itemLabels = _unitOfWork.TodoItemLabels.GetAll().ToList();
+
+            foreach (var i in itemLabels)
+            {
+                var itemLabel = itemLabels.FirstOrDefault(il => il.Id == i.Id);
+                Debug.WriteLine("TodoService.AddLabel() " + i.Id + " element: \n"
+                    + "Id: " + itemLabel.Id + "\n"
+                    + "ItemId: " + itemLabel.TodoItemId + "\n"
+                    + "LabelId: " + itemLabel.LabelId
+                    + "\n----------\n");
+            }
+            
+            // DEBUG END
             return result;
         }
 
@@ -137,7 +146,7 @@ namespace TodoApi.Services
             {
                 _unitOfWork.Dispose();
             }
-            Debug.WriteLine("TodoService.RemoveLabel() output:\n" + _unitOfWork.TodoItemLabels.GetAll().ToString() + "\n");
+            //Debug.WriteLine("TodoService.RemoveLabel() output:\n" + _unitOfWork.TodoItemLabels.GetAll().ToString() + "\n");
 
             return item;
         }

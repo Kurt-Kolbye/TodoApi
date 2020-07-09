@@ -10,8 +10,6 @@ namespace TodoApi.Models
     {
         public long Id { get; set; }
         public long TodoItemId { get; set; }
-        //public TodoItem TodoItem { get; set; }
         public long LabelId { get; set; }
-        //public Label Label { get; set; }
     }
 }

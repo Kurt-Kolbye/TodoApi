@@ -17,12 +17,5 @@ namespace TodoApi.Data
 
         // Relation between TodoItems and Labels
         public DbSet<TodoItemLabel> TodoItemLabels { get; set; }
-
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    //Configure Entity to have many - to - many relationship between TodoItems and Labels
-        //    modelBuilder.Entity<TodoItemLabel>()
-        //        .HasKey(item => new { item.TodoItemId, item.LabelId });
-        //}
     }
 }

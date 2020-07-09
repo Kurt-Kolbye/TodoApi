@@ -146,6 +146,7 @@ namespace TodoApi.Services
             {
                 _unitOfWork.Dispose();
             }
+            // TODO: Remove debug line
             //Debug.WriteLine("TodoService.RemoveLabel() output:\n" + _unitOfWork.TodoItemLabels.GetAll().ToString() + "\n");
 
             return item;

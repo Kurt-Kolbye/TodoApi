@@ -86,7 +86,7 @@ namespace TodoApi.Controllers
 
         // POST: api/TodoItems/1/1
         [HttpPost("{todoItemId}/{labelId}")]
-        public async Task<ActionResult<TodoItem>> PostTodoItemLabel(long todoItemId, long labelId)
+        public async Task<ActionResult<TodoItemLabel>> PostTodoItemLabel(long todoItemId, long labelId)
         {
             if (_todoService.AddLabel(todoItemId, labelId))
             {
@@ -97,8 +97,6 @@ namespace TodoApi.Controllers
             // Something went wrong internally with adding the TodoItemLabel
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-
-        // TODO: Add an "AddLabel" and "DeleteLabel" method that calls this on the TodoService
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
@@ -112,6 +110,20 @@ namespace TodoApi.Controllers
 
             // Return the item that was deleted
             return todoItem;
+        }
+
+        // DELETE: api/TodoItems/1/1
+        [HttpDelete("{todoItemId}/{labelId}")]
+        public async Task<ActionResult<TodoItemLabel>> DeleteTodoItemLabel(long todoItemId, long labelId)
+        {
+            var todoItemLabel = _todoService.RemoveLabel(todoItemId, labelId);
+            if (todoItemLabel == null)
+            {
+                return NotFound();
+            }
+
+            // Return the item that was deleted
+            return todoItemLabel;
         }
     }
 }

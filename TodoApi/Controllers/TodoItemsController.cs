@@ -11,6 +11,7 @@ using TodoApi.Services;
 namespace TodoApi.Controllers
 {
     [Route("api/[controller]")]
+    //[Route("api/[controller]/[action]")]
     [ApiController]
     [EnableCors("AllowMyOrigin")]
     // TODO: Look in to adding back "await" keywords and updating the service layer to be asynchronous

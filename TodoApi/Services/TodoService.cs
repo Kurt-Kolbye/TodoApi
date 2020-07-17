@@ -20,29 +20,33 @@ namespace TodoApi.Services
         public IEnumerable<TodoItem> GetAll()
         {
             //TODO: Get associated labels and return with the TodoItem
+            var todoItems = new List<TodoItem>();
+            try
+            {
+                todoItems = _unitOfWork.TodoItems.GetAll().ToList();
 
+                foreach (var todoItem in todoItems)
+                {
+                    todoItem.Labels = GetLabelsAssignedTo(todoItem);
+                }                
+            }
+            catch (Exception)
+            {
 
-            return _unitOfWork.TodoItems.GetAll();
+                _unitOfWork.Dispose();
+            }
+
+            return todoItems;
         }
 
         public TodoItem Get(long id)
         {
-            //TODO: Get associated labels and return with the TodoItem
             var todoItem = new TodoItem();
             try
             {
                 todoItem = _unitOfWork.TodoItems.Get(id);
-                
-                var itemLabels = _unitOfWork.TodoItemLabels.Find(il => il.TodoItemId == id);
-                var labels = new List<Label>();
-                // TODO: need to figure out how to query based on the labelId matching the itemLabels ids without using a loop
-                //_unitOfWork.Labels.Find(l => l.Id == itemLabels.Contains(l.Id); 
-                foreach (var itemLabel in itemLabels)
-                {
-                    labels.Add(_unitOfWork.Labels.Get(itemLabel.LabelId));
-                }
 
-                todoItem.Labels = labels;
+                todoItem.Labels = GetLabelsAssignedTo(todoItem);
             }
             catch (Exception)
             {
@@ -177,6 +181,18 @@ namespace TodoApi.Services
             //Debug.WriteLine("TodoService.RemoveLabel() output:\n" + _unitOfWork.TodoItemLabels.GetAll().ToString() + "\n");
 
             return item;
+        }
+
+        // Helper method to get labels assigned to a TodoItem
+        private IList<Label> GetLabelsAssignedTo(TodoItem todoItem)
+        {
+            var itemLabels = _unitOfWork.TodoItemLabels.Find(il => il.TodoItemId == todoItem.Id);
+            var allLabels = _unitOfWork.Labels.GetAll();
+
+            // Get all labels that are associated with the given TodoItem
+            var labels = allLabels.Where(l => itemLabels.Any(il => il.LabelId == l.Id));
+
+            return labels.ToList();
         }
     }
 }

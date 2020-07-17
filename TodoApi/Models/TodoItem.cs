@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TodoApi.Models
 {
@@ -8,7 +9,8 @@ namespace TodoApi.Models
         public string Name { get; set; }
         public bool IsComplete { get; set; }
 
-        public IList<TodoItemLabel> TodoItemLabels { get; set; } = new List<TodoItemLabel>();
+        [NotMapped]
+        public IList<Label> Labels { get; set; }
 
         public TodoItem()
         {
@@ -18,6 +20,7 @@ namespace TodoApi.Models
         {
             Name = name;
             IsComplete = isComplete;
+            Labels = new List<Label>();
         }
     }
 }

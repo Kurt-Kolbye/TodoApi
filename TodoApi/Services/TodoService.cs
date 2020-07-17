@@ -19,12 +19,39 @@ namespace TodoApi.Services
         
         public IEnumerable<TodoItem> GetAll()
         {
+            //TODO: Get associated labels and return with the TodoItem
+
+
             return _unitOfWork.TodoItems.GetAll();
         }
 
         public TodoItem Get(long id)
         {
-            return _unitOfWork.TodoItems.Get(id);
+            //TODO: Get associated labels and return with the TodoItem
+            var todoItem = new TodoItem();
+            try
+            {
+                todoItem = _unitOfWork.TodoItems.Get(id);
+                
+                var itemLabels = _unitOfWork.TodoItemLabels.Find(il => il.TodoItemId == id);
+                var labels = new List<Label>();
+                // TODO: need to figure out how to query based on the labelId matching the itemLabels ids without using a loop
+                //_unitOfWork.Labels.Find(l => l.Id == itemLabels.Contains(l.Id); 
+                foreach (var itemLabel in itemLabels)
+                {
+                    labels.Add(_unitOfWork.Labels.Get(itemLabel.LabelId));
+                }
+
+                todoItem.Labels = labels;
+            }
+            catch (Exception)
+            {
+
+                _unitOfWork.Dispose();
+            }
+
+            return todoItem;
+            
         }
 
         public bool Add(TodoItem todoItem)

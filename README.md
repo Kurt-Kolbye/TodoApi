@@ -12,7 +12,7 @@ The project gave me experience and insights into:
 * leveraging dependency injection in my controllers and services,
 * and separating out my Data Access, Business, and Client (controllers) layers.
 
-I also built a minimal website PLACEHOLDER to access the API which creates To Dos and Labels. This gave me experience into configuring and understanding CORS policies with the API as well.
+I also built a minimal website [here] (https://github.com/Kurt-Kolbye/TodoWebsite) to access the API which creates To Dos and Labels. This gave me experience into configuring and understanding CORS policies with the API as well.
 
 ## Summary
 

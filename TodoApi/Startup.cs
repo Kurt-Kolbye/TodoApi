@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-//using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
-using TodoApi.Models;
+using TodoApi.Data;
+using TodoApi.Services;
 
 namespace TodoApi
 {
@@ -23,7 +23,7 @@ namespace TodoApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Added to support cross-origin requests and the ContentType header
-            // Swap out localhost with other environments
+            // Swap out localhost with other environments later
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowMyOrigin",
@@ -31,7 +31,14 @@ namespace TodoApi
                     .WithHeaders(HeaderNames.ContentType, "application/json")
                     .AllowAnyMethod());
             });
-            services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList"));
+
+            // Add dependencies including DbContext. QueryTrackingBehavior is disabled to prevent issues with double tracking entities unexpectedly
+            services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoList").UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ITodoService, TodoService>();
+            services.AddScoped<ILabelService, LabelService>();
+
             services.AddControllers();
         }
 

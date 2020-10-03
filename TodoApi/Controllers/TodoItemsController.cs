@@ -5,35 +5,37 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
+using TodoApi.Services;
 
 namespace TodoApi.Controllers
 {
     [Route("api/[controller]")]
+    //[Route("api/[controller]/[action]")]
     [ApiController]
     [EnableCors("AllowMyOrigin")]
+    // TODO: Look in to adding back "await" keywords and updating the service layer to be asynchronous
     public class TodoItemsController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly ITodoService _todoService;
 
-        public TodoItemsController(TodoContext context)
+        public TodoItemsController(ITodoService todoService)
         {
-            _context = context;
+            _todoService = todoService;
         }
 
         // GET: api/TodoItems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
-            return await _context.TodoItems.ToListAsync();
+            return _todoService.GetAll().ToList();
         }
 
         // GET: api/TodoItems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<TodoItem>> GetTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var todoItem = _todoService.Get(id);
 
             if (todoItem == null)
             {
@@ -52,56 +54,77 @@ namespace TodoApi.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(todoItem).State = EntityState.Modified;
-
-            try
+            // Q: I don't like that this logic is here, maybe discuss a different way to detect that an item was not found, but no server problem occurred
+            if (_todoService.Get(id) == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                // Could not find the todoitem
+                return NotFound();
             }
 
-            return NoContent();
+            if (_todoService.Update(todoItem))
+            {
+                // TodoItem was updated successfully
+                return NoContent();
+            }
+
+            // Something went wrong internally with updating the TodoItem
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         // POST: api/TodoItems
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
-            _context.TodoItems.Add(todoItem);
-            await _context.SaveChangesAsync();
+            if (_todoService.Add(todoItem))
+            {
+                // TodoItem was added successfully
+                return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
+            }
 
-            return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, todoItem);
+            // Something went wrong internally with adding the TodoItem
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        // POST: api/TodoItems/1/1
+        [HttpPost("{todoItemId}/{labelId}")]
+        public async Task<ActionResult<TodoItemLabel>> PostTodoItemLabel(long todoItemId, long labelId)
+        {
+            if (_todoService.AddLabel(todoItemId, labelId))
+            {
+                // TodoItemLabel was added successfully
+                return NoContent();
+            }
+
+            // Something went wrong internally with adding the TodoItemLabel
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
         // DELETE: api/TodoItems/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<TodoItem>> DeleteTodoItem(long id)
         {
-            var todoItem = await _context.TodoItems.FindAsync(id);
+            var todoItem = _todoService.Remove(id);
             if (todoItem == null)
             {
                 return NotFound();
             }
 
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
-
+            // Return the item that was deleted
             return todoItem;
         }
 
-        private bool TodoItemExists(long id)
+        // DELETE: api/TodoItems/1/1
+        [HttpDelete("{todoItemId}/{labelId}")]
+        public async Task<ActionResult<TodoItemLabel>> DeleteTodoItemLabel(long todoItemId, long labelId)
         {
-            return _context.TodoItems.Any(e => e.Id == id);
+            var todoItemLabel = _todoService.RemoveLabel(todoItemId, labelId);
+            if (todoItemLabel == null)
+            {
+                return NotFound();
+            }
+
+            // Return the item that was deleted
+            return todoItemLabel;
         }
     }
 }
